@@ -9,10 +9,16 @@ class HomePageProvider extends ChangeNotifier {
   HomePageProvider(this.ref);
   final Ref ref;
 
+  bool isSpeak = false;
   int counter = 0;
 
   incrementCounter() {
     counter++;
+    notifyListeners();
+  }
+
+  clickSpeakButton() {
+    isSpeak = !isSpeak;
     notifyListeners();
   }
 }

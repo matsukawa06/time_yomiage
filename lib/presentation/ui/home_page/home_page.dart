@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
 import 'package:time_yomiage/presentation/ui/home_page/provider/home_page_provider.dart';
 
@@ -14,18 +15,33 @@ class MyHomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<MyHomePage> {
   String nowtime = DateFormat('HH:mm:ss').format(DateTime.now()).toString();
+  late FlutterTts tts;
+  var secondsList = ['10', '20', '30', '40', '50'];
 
   @override
   void initState() {
     super.initState();
     Timer.periodic(const Duration(seconds: 1), _onTimer);
+    tts = FlutterTts();
+    tts.setLanguage("ja-JP");
+    tts.setVolume(1.0);
+    tts.setSpeechRate(1.4);
+    tts.setPitch(1.0);
   }
 
   void _onTimer(Timer timer) {
-    var newTime = DateFormat('HH:mm:ss').format(DateTime.now());
+    DateTime dt = DateTime.now();
+    var newTime = DateFormat('HH:mm:ss').format(dt);
     setState(() {
       nowtime = newTime;
     });
+    // 再生中かをチェック
+    if (ref.watch(homePageProvider).isSpeak) {
+      var nowSecond = DateFormat('ss').format(dt);
+      if (secondsList.contains(nowSecond)) {
+        speakSecond(nowSecond);
+      }
+    }
   }
 
   @override
@@ -37,59 +53,47 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         title: const Text('時間読み上げ'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              nowtime,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '${homePageP.counter}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                nowtime,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              FilledButton.icon(
+                onPressed: () {
+                  ref.read(homePageProvider).clickSpeakButton();
+                },
+                // onPressed: () async {
+                //   await startSpeak();
+                // },
+                icon: const Icon(Icons.play_circle_outline),
+                label: const Text('読み上げを開始'),
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => homePageP.incrementCounter(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
-}
 
-//   @override
-//   Widget build(BuildContext context, ref) {
-//     final homePageP = ref.watch(homePageProvider);
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-//         title: const Text('時間読み上げ'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             const Text(
-//               'You have pushed the button this many times:',
-//             ),
-//             Text(
-//               '${homePageP.counter}',
-//               style: Theme.of(context).textTheme.headlineMedium,
-//             ),
-//           ],
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () => homePageP.incrementCounter(),
-//         tooltip: 'Increment',
-//         child: const Icon(Icons.add),
-//       ), // This trailing comma makes auto-formatting nicer for build methods.
-//     );
-//   }
-// }
+  void speakSecond(String pScends) {
+    tts.speak('$pScends秒');
+  }
+
+  Future<void> startSpeak() async {
+    var newTime = DateFormat('HH:mm').format(DateTime.now());
+    for (int i = 0; i < 2; i++) {
+      tts.speak('$newTime');
+      await Future.delayed(const Duration(seconds: 3));
+    }
+    // tts.speak('$newTime');
+  }
+}
