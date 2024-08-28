@@ -25,7 +25,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     tts = FlutterTts();
     tts.setLanguage("ja-JP");
     tts.setVolume(1.0);
-    tts.setSpeechRate(1.4);
+    tts.setSpeechRate(0.5);
     tts.setPitch(1.0);
   }
 
@@ -38,7 +38,9 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     // 再生中かをチェック
     if (ref.watch(homePageProvider).isSpeak) {
       var nowSecond = DateFormat('ss').format(dt);
-      if (secondsList.contains(nowSecond)) {
+      if (nowSecond == "00") {
+        speakTime();
+      } else if (secondsList.contains(nowSecond)) {
         speakSecond(nowSecond);
       }
     }
@@ -66,11 +68,11 @@ class _HomePageState extends ConsumerState<MyHomePage> {
                 onPressed: () {
                   ref.read(homePageProvider).clickSpeakButton();
                 },
-                // onPressed: () async {
-                //   await startSpeak();
-                // },
-                icon: const Icon(Icons.play_circle_outline),
-                label: const Text('読み上げを開始'),
+                icon: ref.watch(homePageProvider).isSpeak
+                    ? const Icon(Icons.stop)
+                    : const Icon(Icons.play_circle_outline),
+                label:
+                    ref.watch(homePageProvider).isSpeak ? const Text('音声停止') : const Text('音声開始'),
               )
             ],
           ),
@@ -88,10 +90,10 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     tts.speak('$pScends秒');
   }
 
-  Future<void> startSpeak() async {
+  Future<void> speakTime() async {
     var newTime = DateFormat('HH:mm').format(DateTime.now());
     for (int i = 0; i < 2; i++) {
-      tts.speak('$newTime');
+      tts.speak(newTime);
       await Future.delayed(const Duration(seconds: 3));
     }
     // tts.speak('$newTime');
