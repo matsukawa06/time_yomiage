@@ -9,16 +9,17 @@ class HomePageProvider extends ChangeNotifier {
   HomePageProvider(this.ref);
   final Ref ref;
 
-  bool isSpeak = false;
-  int counter = 0;
+  bool isSpeechPlay = false;
+  bool isSecondSwitch = true;
 
-  incrementCounter() {
-    counter++;
+  // 音声再生・停止ボタンクリック処理
+  clickSpeakButton() {
+    isSpeechPlay = !isSpeechPlay;
     notifyListeners();
   }
 
-  clickSpeakButton() {
-    isSpeak = !isSpeak;
-    notifyListeners();
+  // 秒読み上げスイッチ変更
+  changeSecondSwitch() {
+    isSecondSwitch = !isSecondSwitch;
   }
 }
