@@ -28,7 +28,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     Timer.periodic(const Duration(milliseconds: 100), _onTimer);
     tts = FlutterTts();
     tts.setLanguage("ja-JP");
-    tts.setVolume(1.0);
+    tts.setVolume(ref.read(homePageProvider).volume);
     tts.setSpeechRate(0.5);
     tts.setPitch(1.0);
   }
@@ -89,6 +89,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   //=========================================
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -96,7 +97,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
       ),
       body: Center(
         child: SizedBox(
-          width: double.infinity,
+          width: size.width * 0.9,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -106,19 +107,18 @@ class _HomePageState extends ConsumerState<MyHomePage> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               // 音声再生・停止ボタン
-              FilledButton.icon(
-                onPressed: () {
-                  ref.read(homePageProvider).clickSpeakButton();
-                },
-                icon: ref.watch(homePageProvider).isSpeechPlay
-                    ? const Icon(Icons.stop)
-                    : const Icon(Icons.play_circle_outline),
-                label: ref.watch(homePageProvider).isSpeechPlay
-                    ? const Text('音声停止')
-                    : const Text('音声開始'),
+              playStopButton(),
+              Container(
+                margin: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                child: Column(
+                  children: [
+                    // 秒読み上げスイッチ
+                    secondSwitch(),
+                    // ボリュームスライダー
+                    volumeSlider(),
+                  ],
+                ),
               ),
-              // 秒読み上げスイッチ
-              secondSwitch(),
             ],
           ),
         ),
@@ -126,26 +126,74 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     );
   }
 
+  // 音声再生・停止ボタン
+  Widget playStopButton() {
+    String buttonLabel;
+    if (ref.watch(homePageProvider).isSpeechPlay) {
+      buttonLabel = '音声停止';
+    } else {
+      buttonLabel = '音声開始';
+    }
+
+    return FilledButton.icon(
+      onPressed: () {
+        ref.read(homePageProvider).clickSpeakButton();
+      },
+      icon: ref.watch(homePageProvider).isSpeechPlay
+          ? const Icon(Icons.stop)
+          : const Icon(Icons.play_circle_outline),
+      label: Text(
+        buttonLabel,
+        style: const TextStyle(
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
   // 秒読み上げスイッチ
   Widget secondSwitch() {
-    final size = MediaQuery.of(context).size;
-    return SizedBox(
-      width: size.width * 0.9,
-      child: SwitchListTile(
-        title: const Text(
-          '秒を読み上げ',
-          textAlign: TextAlign.left,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '秒読み上げ',
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        // secondary: const SizedBox(
-        //   width: 60,
-        // ),
-        value: ref.watch(homePageProvider).isSecondSwitch,
-        onChanged: (value) {
-          setState(() {
-            ref.read(homePageProvider).changeSecondSwitch();
-          });
-        },
-      ),
+        Switch(
+          value: ref.watch(homePageProvider).isSecondSwitch,
+          onChanged: (value) {
+            setState(() {
+              ref.read(homePageProvider).changeSecondSwitch();
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  // ボリュームスライダー
+  Widget volumeSlider() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'ボリューム',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Slider(
+          value: ref.watch(homePageProvider).volume,
+          min: 0.0,
+          max: 1.0,
+          divisions: 10,
+          onChanged: (value) {
+            setState(() {
+              ref.read(homePageProvider).changeVolumeSlider(value);
+              tts.setVolume(value);
+            });
+          },
+        ),
+      ],
     );
   }
 }

@@ -11,6 +11,7 @@ class HomePageProvider extends ChangeNotifier {
 
   bool isSpeechPlay = false;
   bool isSecondSwitch = true;
+  double volume = 1.0;
 
   // 音声再生・停止ボタンクリック処理
   clickSpeakButton() {
@@ -21,5 +22,10 @@ class HomePageProvider extends ChangeNotifier {
   // 秒読み上げスイッチ変更
   changeSecondSwitch() {
     isSecondSwitch = !isSecondSwitch;
+  }
+
+  // ボリュームスライダー変更
+  changeVolumeSlider(double e) {
+    volume = e;
   }
 }
