@@ -11,11 +11,21 @@ class HomePageProvider extends ChangeNotifier {
 
   bool isSpeechPlay = false;
   bool isSecondSwitch = true;
+  int hourTimes = 1;
   double volume = 1.0;
+  double speechRate = 1.0;
+  double pitch = 1.0;
+  dynamic voices;
 
   // 音声再生・停止ボタンクリック処理
   clickSpeakButton() {
     isSpeechPlay = !isSpeechPlay;
+    notifyListeners();
+  }
+
+  // 時間読み上げ繰り返しリスト変更
+  changeHourTimesList(int e) {
+    hourTimes = e;
     notifyListeners();
   }
 
@@ -27,5 +37,23 @@ class HomePageProvider extends ChangeNotifier {
   // ボリュームスライダー変更
   changeVolumeSlider(double e) {
     volume = e;
+  }
+
+  // 速度スライダー変更
+  changeSpeechRateSlider(double e) {
+    speechRate = e;
+  }
+
+  // ピッチスライダー変更
+  changePitchSlider(double e) {
+    pitch = e;
+  }
+
+  // 声リスト作成
+  setVoicesList(dynamic e) {
+    for (var item in e) {
+      var map = item as Map<Object?, Object?>;
+    }
+    voices = e;
   }
 }

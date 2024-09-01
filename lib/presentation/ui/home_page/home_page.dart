@@ -18,6 +18,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   late FlutterTts tts;
   bool isSpeak = false;
   var secondsList = ['10', '20', '30', '40', '50'];
+  dynamic voices;
 
   //=========================================
   // 業務ロジック
@@ -31,6 +32,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     tts.setVolume(ref.read(homePageProvider).volume);
     tts.setSpeechRate(0.5);
     tts.setPitch(1.0);
+    ref.read(homePageProvider).setVoicesList(tts.getVoices);
   }
 
   void _onTimer(Timer timer) {
@@ -78,7 +80,8 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   // 時間を読み上げ
   Future<void> speakTime() async {
     var newTime = DateFormat('HH:mm').format(DateTime.now());
-    for (int i = 0; i < 2; i++) {
+    int hourTimes = ref.watch(homePageProvider).hourTimes;
+    for (int i = 0; i < hourTimes; i++) {
       tts.speak(newTime);
       await Future.delayed(const Duration(seconds: 3));
     }
@@ -98,31 +101,43 @@ class _HomePageState extends ConsumerState<MyHomePage> {
       body: Center(
         child: SizedBox(
           width: size.width * 0.9,
+          child: bodyMain(context),
+        ),
+      ),
+    );
+  }
+
+  // メインコンテンツ
+  Column bodyMain(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        // 現在時刻
+        Text(
+          nowtime,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        // 音声再生・停止ボタン
+        playStopButton(),
+        // 各種設定
+        Container(
+          margin: const EdgeInsets.only(top: 40, left: 15, right: 15),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // 現在時刻
-              Text(
-                nowtime,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              // 音声再生・停止ボタン
-              playStopButton(),
-              Container(
-                margin: const EdgeInsets.only(top: 40, left: 15, right: 15),
-                child: Column(
-                  children: [
-                    // 秒読み上げスイッチ
-                    secondSwitch(),
-                    // ボリュームスライダー
-                    volumeSlider(),
-                  ],
-                ),
-              ),
+            children: [
+              // 時間読み上げ回数リスト
+              hourTimesList(),
+              // 秒読み上げスイッチ
+              secondSwitch(),
+              // ボリュームスライダー
+              volumeSlider(),
+              // 速度スライダー
+              speechRateSlider(),
+              // ピッチスライダー
+              pitchSlider(),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -148,6 +163,35 @@ class _HomePageState extends ConsumerState<MyHomePage> {
           fontSize: 20,
         ),
       ),
+    );
+  }
+
+  // 時間読み上げ回数リスト
+  Widget hourTimesList() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '時間読み上げ繰り返し',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        DropdownButton(
+          items: const [
+            DropdownMenuItem(
+              value: 1,
+              child: Text('１回'),
+            ),
+            DropdownMenuItem(
+              value: 2,
+              child: Text('２回'),
+            )
+          ],
+          value: ref.watch(homePageProvider).hourTimes,
+          onChanged: (int? value) {
+            ref.read(homePageProvider).changeHourTimesList(value!);
+          },
+        )
+      ],
     );
   }
 
@@ -190,6 +234,56 @@ class _HomePageState extends ConsumerState<MyHomePage> {
             setState(() {
               ref.read(homePageProvider).changeVolumeSlider(value);
               tts.setVolume(value);
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  // 速度スライダー
+  Widget speechRateSlider() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '速度',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Slider(
+          value: ref.watch(homePageProvider).speechRate,
+          min: 0.0,
+          max: 1.0,
+          divisions: 10,
+          onChanged: (value) {
+            setState(() {
+              ref.read(homePageProvider).changeSpeechRateSlider(value);
+              tts.setSpeechRate(value);
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  // ピッチスライダー
+  Widget pitchSlider() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'ピッチ',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Slider(
+          value: ref.watch(homePageProvider).pitch,
+          min: 0.0,
+          max: 1.0,
+          divisions: 10,
+          onChanged: (value) {
+            setState(() {
+              ref.read(homePageProvider).changePitchSlider(value);
+              tts.setPitch(value);
             });
           },
         ),
