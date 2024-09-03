@@ -18,7 +18,6 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   late FlutterTts tts;
   bool isSpeak = false;
   var secondsList = ['10', '20', '30', '40', '50'];
-  dynamic voices;
 
   //=========================================
   // 業務ロジック
@@ -32,7 +31,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     tts.setVolume(ref.read(homePageProvider).volume);
     tts.setSpeechRate(0.5);
     tts.setPitch(1.0);
-    ref.read(homePageProvider).setVoicesList(tts.getVoices);
+    // ref.read(homePageProvider).setVoicesList(tts);
   }
 
   void _onTimer(Timer timer) {
@@ -145,9 +144,9 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   Widget playStopButton() {
     String buttonLabel;
     if (ref.watch(homePageProvider).isSpeechPlay) {
-      buttonLabel = '音声停止';
+      buttonLabel = '読み上げ停止';
     } else {
-      buttonLabel = '音声開始';
+      buttonLabel = '読み上げ開始';
     }
 
     return FilledButton.icon(
@@ -155,12 +154,12 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         ref.read(homePageProvider).clickSpeakButton();
       },
       icon: ref.watch(homePageProvider).isSpeechPlay
-          ? const Icon(Icons.stop)
-          : const Icon(Icons.play_circle_outline),
+          ? const Icon(Icons.stop_circle_outlined, size: 30)
+          : const Icon(Icons.play_circle_outline, size: 30),
       label: Text(
         buttonLabel,
         style: const TextStyle(
-          fontSize: 20,
+          fontSize: 28,
         ),
       ),
     );

@@ -15,7 +15,7 @@ class HomePageProvider extends ChangeNotifier {
   double volume = 1.0;
   double speechRate = 1.0;
   double pitch = 1.0;
-  dynamic voices;
+  // List voiceName = [];
 
   // 音声再生・停止ボタンクリック処理
   clickSpeakButton() {
@@ -49,11 +49,14 @@ class HomePageProvider extends ChangeNotifier {
     pitch = e;
   }
 
-  // 声リスト作成
-  setVoicesList(dynamic e) {
-    for (var item in e) {
-      var map = item as Map<Object?, Object?>;
-    }
-    voices = e;
-  }
+  // // 声リスト作成
+  // setVoicesList(FlutterTts e) async {
+  //   List voices = await e.getVoices;
+  //   for (var item in voices) {
+  //     var map = item as Map<Object?, Object?>;
+  //     if (map["locale"].toString().toLowerCase().contains("ja")) {
+  //       voiceName.add(map["name"]);
+  //     }
+  //   }
+  // }
 }
