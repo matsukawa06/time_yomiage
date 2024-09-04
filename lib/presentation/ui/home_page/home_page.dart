@@ -1,10 +1,12 @@
 import 'dart:async';
-
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:time_yomiage/admob/ad_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
 import 'package:time_yomiage/presentation/ui/home_page/provider/home_page_provider.dart';
+import 'package:time_yomiage/presentation/ui/home_page/util/util_widget.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key});
@@ -18,6 +20,8 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   late FlutterTts tts;
   bool isSpeak = false;
   var secondsList = ['10', '20', '30', '40', '50'];
+  final BannerAd myBanner = AdHelper().setBannerAd();
+  late AdWidget adWidget;
 
   //=========================================
   // 業務ロジック
@@ -92,6 +96,9 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    // 広告の読み込み
+    myBanner.load();
+    adWidget = AdWidget(ad: myBanner);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -136,6 +143,9 @@ class _HomePageState extends ConsumerState<MyHomePage> {
             ],
           ),
         ),
+        const SpaceBox.height(value: 60),
+        // Admob広告の表示
+        AdHelper().setAdContainer(context, adWidget),
       ],
     );
   }
