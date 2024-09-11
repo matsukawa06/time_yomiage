@@ -7,6 +7,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
 import 'package:time_yomiage/presentation/ui/home_page/provider/home_page_provider.dart';
 import 'package:time_yomiage/presentation/ui/home_page/util/util_widget.dart';
+import 'package:time_yomiage/presentation/ui/setting_page/setting_page.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key});
@@ -102,7 +103,8 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('時間読み上げ'),
+        title: const Text(''),
+        actions: [_settingIcon(context)],
       ),
       body: Center(
         child: SizedBox(
@@ -110,6 +112,21 @@ class _HomePageState extends ConsumerState<MyHomePage> {
           child: bodyMain(context),
         ),
       ),
+    );
+  }
+
+  Widget _settingIcon(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const SettingPage();
+            },
+          ),
+        );
+      },
+      icon: const Icon(Icons.settings, size: 25),
     );
   }
 
