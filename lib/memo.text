@@ -1,0 +1,27 @@
+setting.jsonの中身
+
+{
+    "dart.flutterSdkPath": "/Users/matsukawanaoya/develop/flutter/flutter",
+    "workbench.tree.indent": 20,
+    "editor.minimap.enabled": false,
+    "workbench.editor.openPositioning": "last",
+    "workbench.editor.enablePreview": false,
+    // ツリー構造のガイドを表示する
+    "dart.previewFlutterUiGuides": true,
+    // 以下はオプション
+    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "dart.closingLabels": false,
+    // ①コード整形の場合
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        // ②コード修正の場合
+        "source.fixAll": "explicit",
+        // ③importの順番整理の場合
+        "source.organizeImports": "explicit",
+    },
+}
+// editor.codeActionsOnSaveの
+// 各設定項目がboolean値からenum値に変更された
+// explicit：保存されたときにアクションを実行、以前のtrueと同じ。
+// always：保存、ウインドウ変更、フォーカス変更時にアクションを実行。
+// never：保存されたときにアクションを実行しない、以前のfalseと同じ。
