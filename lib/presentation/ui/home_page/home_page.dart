@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:time_yomiage/admob/ad_helper.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
+import 'package:time_yomiage/admob/ad_helper.dart';
 import 'package:time_yomiage/presentation/ui/home_page/provider/home_page_provider.dart';
 import 'package:time_yomiage/presentation/ui/home_page/util/util_widget.dart';
 import 'package:time_yomiage/presentation/ui/setting_page/setting_page.dart';
@@ -102,7 +103,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     adWidget = AdWidget(ad: myBanner);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: const Text(''),
         actions: [_settingIcon(context)],
       ),
@@ -126,7 +127,11 @@ class _HomePageState extends ConsumerState<MyHomePage> {
           ),
         );
       },
-      icon: const Icon(Icons.settings, size: 25),
+      icon: Icon(
+        Icons.settings,
+        size: 25,
+        color: Theme.of(context).colorScheme.inverseSurface,
+      ),
     );
   }
 
@@ -185,8 +190,9 @@ class _HomePageState extends ConsumerState<MyHomePage> {
           : const Icon(Icons.play_circle_outline, size: 30),
       label: Text(
         buttonLabel,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 28,
+          color: Theme.of(context).colorScheme.surface,
         ),
       ),
     );

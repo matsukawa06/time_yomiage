@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:time_yomiage/presentation/controller/theme_controller.dart';
 import 'package:time_yomiage/presentation/ui/home_page/home_page.dart';
 
 void main() {
@@ -21,17 +22,27 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  static const Color _seedColor = Color(0x00ffffff);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Time Yomiage',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 56, 194, 141)),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(),
+    return Consumer(
+      builder: (context, ref, _) {
+        return MaterialApp(
+          title: 'Time Yomiage',
+          theme: ThemeData(
+            brightness: Brightness.light,
+            colorSchemeSeed: _seedColor,
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            colorSchemeSeed: _seedColor,
+          ),
+          themeMode: ref.watch(themeController).mode,
+          home: const MyHomePage(),
+        );
+      },
     );
   }
 }

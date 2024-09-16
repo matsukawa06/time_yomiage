@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:time_yomiage/presentation/controller/theme_controller.dart';
+import 'package:time_yomiage/presentation/ui/home_page/util/util_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///
@@ -9,18 +11,23 @@ import 'package:url_launcher/url_launcher.dart';
 class SettingPage extends ConsumerWidget {
   const SettingPage({super.key});
 
+  //=========================================
+  // 画面描画
+  //=========================================
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: const Text('設定'),
       ),
       body: _body(ref),
     );
   }
 
-  // settingページのbody部
+  ///
+  /// settingページのbody部
+  ///
   Widget _body(WidgetRef ref) {
     Future<PackageInfo> getPackageInfo() {
       return PackageInfo.fromPlatform();
@@ -39,6 +46,9 @@ class SettingPage extends ConsumerWidget {
           final data = snapshot.data!;
           return Column(
             children: [
+              // App設定
+              _appSetting(context, ref),
+              const SpaceBox.height(value: 32),
               // App情報
               _appInfo(context, data),
             ],
@@ -48,7 +58,33 @@ class SettingPage extends ConsumerWidget {
     );
   }
 
+  ///
+  /// App設定
+  ///
+  Widget _appSetting(BuildContext context, WidgetRef ref) {
+    return Card(
+      elevation: 5,
+      child: Column(
+        children: [
+          // ダークモード選択エリア
+          SwitchListTile(
+            value: ref.watch(themeController).isDark,
+            title: const Text(
+              'ダークモード',
+              style: TextStyle(fontSize: 18),
+            ),
+            onChanged: (bool value) {
+              ref.read(themeController).brightnessToggle();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  ///
   /// App情報
+  ///
   Widget _appInfo(BuildContext context, PackageInfo data) {
     return Card(
       elevation: 5,
