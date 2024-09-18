@@ -77,8 +77,80 @@ class SettingPage extends ConsumerWidget {
               ref.read(themeController).brightnessToggle();
             },
           ),
+          // ボリュームスライダー
+          volumeSlider(context, ref),
+          // 速度スライダー
+          speechRateSlider(context, ref),
+          // ピッチスライダー
+          pitchSlider(context, ref),
         ],
       ),
+    );
+  }
+
+  // ボリュームスライダー
+  Widget volumeSlider(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'ボリューム',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Slider(
+          value: ref.watch(themeController).volume,
+          min: 0.0,
+          max: 1.0,
+          divisions: 10,
+          onChanged: (value) {
+            ref.read(themeController).changeVolumeSlider(value);
+          },
+        ),
+      ],
+    );
+  }
+
+  // 速度スライダー
+  Widget speechRateSlider(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '速度',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Slider(
+          value: ref.watch(themeController).speechRate,
+          min: 0.0,
+          max: 1.0,
+          divisions: 10,
+          onChanged: (value) {
+            ref.read(themeController).changeSpeechRateSlider(value);
+          },
+        ),
+      ],
+    );
+  }
+
+  // ピッチスライダー
+  Widget pitchSlider(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'ピッチ',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Slider(
+          value: ref.watch(themeController).pitch,
+          min: 0.0,
+          max: 1.0,
+          divisions: 10,
+          onChanged: (value) {
+            ref.read(themeController).changePitchSlider(value);
+          },
+        ),
+      ],
     );
   }
 

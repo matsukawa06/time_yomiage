@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:time_yomiage/presentation/controller/tts_controller.dart';
 
 final homePageProvider = ChangeNotifierProvider(
   (ref) => HomePageProvider(ref),
@@ -9,13 +10,20 @@ class HomePageProvider extends ChangeNotifier {
   HomePageProvider(this.ref);
   final Ref ref;
 
+  // 読み上げするか
   bool isSpeechPlay = false;
+  // 秒読み上げするか
   bool isSecondSwitch = true;
+  // 読み上げ回数
   int hourTimes = 1;
-  double volume = 1.0;
-  double speechRate = 1.0;
-  double pitch = 1.0;
-  // List voiceName = [];
+
+  initTts() {
+    ref.read(ttsController).initTts();
+  }
+
+  speakTts(String p) {
+    ref.read(ttsController).speakTts(p);
+  }
 
   // 音声再生・停止ボタンクリック処理
   clickSpeakButton() {
@@ -33,30 +41,4 @@ class HomePageProvider extends ChangeNotifier {
   changeSecondSwitch() {
     isSecondSwitch = !isSecondSwitch;
   }
-
-  // ボリュームスライダー変更
-  changeVolumeSlider(double e) {
-    volume = e;
-  }
-
-  // 速度スライダー変更
-  changeSpeechRateSlider(double e) {
-    speechRate = e;
-  }
-
-  // ピッチスライダー変更
-  changePitchSlider(double e) {
-    pitch = e;
-  }
-
-  // // 声リスト作成
-  // setVoicesList(FlutterTts e) async {
-  //   List voices = await e.getVoices;
-  //   for (var item in voices) {
-  //     var map = item as Map<Object?, Object?>;
-  //     if (map["locale"].toString().toLowerCase().contains("ja")) {
-  //       voiceName.add(map["name"]);
-  //     }
-  //   }
-  // }
 }

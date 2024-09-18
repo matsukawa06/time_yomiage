@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:time_yomiage/common/shared_preferences.dart';
+import 'package:time_yomiage/presentation/controller/tts_controller.dart';
 
 ///
 /// テーマ変更用の状態クラス
 ///
 final themeController = ChangeNotifierProvider<ThemeController>(
-  (ref) => ThemeController(),
+  (ref) => ThemeController(ref),
 );
 
 class ThemeController extends ChangeNotifier {
+  // コンストラクタ
+  ThemeController(this.ref) {
+    _getShaed();
+  }
+  final Ref ref;
   // SharedPreferences用のキー文字列
   final String _keyIsDark = 'isDark';
   // final String _keyMainColor = 'mainColor';
@@ -18,11 +24,11 @@ class ThemeController extends ChangeNotifier {
   // ダークモード関連
   ThemeMode mode = ThemeMode.light;
   bool isDark = false;
-
-  // コンストラクタ
-  ThemeController() {
-    _getShaed();
-  }
+  // 読み上げ共通設定関連
+  double volume = 1.0;
+  double speechRate = 1.0;
+  double pitch = 1.0;
+  // List voiceName = [];
 
   // 端末保存情報の取得
   Future _getShaed() async {
@@ -30,6 +36,8 @@ class ThemeController extends ChangeNotifier {
     // ダークモード
     isDark = prefs.getBool(_keyIsDark) ?? false;
     _lightOrDarkSetting();
+    // 読み上げ設定
+
     notifyListeners();
   }
 
@@ -47,4 +55,36 @@ class ThemeController extends ChangeNotifier {
     mode = isDark ? ThemeMode.dark : ThemeMode.light;
     // fontColor = isDark ? Colors.white : Colors.black;
   }
+
+  // ボリュームスライダー変更
+  changeVolumeSlider(double e) {
+    ref.read(ttsController).changeVolume(e);
+    volume = e;
+    notifyListeners();
+  }
+
+  // 速度スライダー変更
+  changeSpeechRateSlider(double e) {
+    ref.read(ttsController).changeSpeechRate(e);
+    speechRate = e;
+    notifyListeners();
+  }
+
+  // ピッチスライダー変更
+  changePitchSlider(double e) {
+    ref.read(ttsController).changePitch(e);
+    pitch = e;
+    notifyListeners();
+  }
+
+  // // 声リスト作成
+  // setVoicesList(FlutterTts e) async {
+  //   List voices = await e.getVoices;
+  //   for (var item in voices) {
+  //     var map = item as Map<Object?, Object?>;
+  //     if (map["locale"].toString().toLowerCase().contains("ja")) {
+  //       voiceName.add(map["name"]);
+  //     }
+  //   }
+  // }
 }
