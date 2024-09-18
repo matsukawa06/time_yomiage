@@ -17,10 +17,12 @@ class HomePageProvider extends ChangeNotifier {
   // 読み上げ回数
   int hourTimes = 1;
 
+  // ttsの初期化を呼び出す
   initTts() {
     ref.read(ttsController).initTts();
   }
 
+  // ttsのspeakを呼び出す
   speakTts(String p) {
     ref.read(ttsController).speakTts(p);
   }

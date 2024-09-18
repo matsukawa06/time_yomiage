@@ -64,26 +64,34 @@ class SettingPage extends ConsumerWidget {
   Widget _appSetting(BuildContext context, WidgetRef ref) {
     return Card(
       elevation: 5,
-      child: Column(
-        children: [
-          // ダークモード選択エリア
-          SwitchListTile(
-            value: ref.watch(themeController).isDark,
-            title: const Text(
-              'ダークモード',
-              style: TextStyle(fontSize: 18),
+      child: Container(
+        margin: const EdgeInsets.only(left: 15, right: 15),
+        child: Column(
+          children: [
+            // ダークモード選択エリア
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'ダークモード',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Switch(
+                  value: ref.watch(themeController).isDark,
+                  onChanged: (bool value) {
+                    ref.read(themeController).brightnessToggle();
+                  },
+                )
+              ],
             ),
-            onChanged: (bool value) {
-              ref.read(themeController).brightnessToggle();
-            },
-          ),
-          // ボリュームスライダー
-          volumeSlider(context, ref),
-          // 速度スライダー
-          speechRateSlider(context, ref),
-          // ピッチスライダー
-          pitchSlider(context, ref),
-        ],
+            // ボリュームスライダー
+            volumeSlider(context, ref),
+            // 速度スライダー
+            speechRateSlider(context, ref),
+            // ピッチスライダー
+            pitchSlider(context, ref),
+          ],
+        ),
       ),
     );
   }

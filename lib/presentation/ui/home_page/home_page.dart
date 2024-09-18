@@ -18,7 +18,6 @@ class MyHomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<MyHomePage> {
   String nowtime = DateFormat('HH:mm:ss').format(DateTime.now()).toString();
-  // late FlutterTts tts;
   bool isSpeak = false;
   var secondsList = ['10', '20', '30', '40', '50'];
   final BannerAd myBanner = AdHelper().setBannerAd();
@@ -32,12 +31,6 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     super.initState();
     Timer.periodic(const Duration(milliseconds: 100), _onTimer);
     ref.read(homePageProvider).initTts();
-    // tts = FlutterTts();
-    // tts.setLanguage("ja-JP");
-    // tts.setVolume(ref.read(themeController).volume);
-    // tts.setSpeechRate(0.5);
-    // tts.setPitch(1.0);
-    // ref.read(homePageProvider).setVoicesList(tts);
   }
 
   void _onTimer(Timer timer) {
@@ -158,12 +151,6 @@ class _HomePageState extends ConsumerState<MyHomePage> {
               hourTimesList(),
               // 秒読み上げスイッチ
               secondSwitch(),
-              // // ボリュームスライダー
-              // volumeSlider(),
-              // // 速度スライダー
-              // speechRateSlider(),
-              // // ピッチスライダー
-              // pitchSlider(),
             ],
           ),
         ),
@@ -249,79 +236,4 @@ class _HomePageState extends ConsumerState<MyHomePage> {
       ],
     );
   }
-
-  // // ボリュームスライダー
-  // Widget volumeSlider() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Text(
-  //         'ボリューム',
-  //         style: Theme.of(context).textTheme.titleMedium,
-  //       ),
-  //       Slider(
-  //         value: ref.watch(themeController).volume,
-  //         min: 0.0,
-  //         max: 1.0,
-  //         divisions: 10,
-  //         onChanged: (value) {
-  //           setState(() {
-  //             ref.read(themeController).changeVolumeSlider(value);
-  //             tts.setVolume(value);
-  //           });
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // // 速度スライダー
-  // Widget speechRateSlider() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Text(
-  //         '速度',
-  //         style: Theme.of(context).textTheme.titleMedium,
-  //       ),
-  //       Slider(
-  //         value: ref.watch(themeController).speechRate,
-  //         min: 0.0,
-  //         max: 1.0,
-  //         divisions: 10,
-  //         onChanged: (value) {
-  //           setState(() {
-  //             ref.read(themeController).changeSpeechRateSlider(value);
-  //             tts.setSpeechRate(value);
-  //           });
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // // ピッチスライダー
-  // Widget pitchSlider() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Text(
-  //         'ピッチ',
-  //         style: Theme.of(context).textTheme.titleMedium,
-  //       ),
-  //       Slider(
-  //         value: ref.watch(themeController).pitch,
-  //         min: 0.0,
-  //         max: 1.0,
-  //         divisions: 10,
-  //         onChanged: (value) {
-  //           setState(() {
-  //             ref.read(themeController).changePitchSlider(value);
-  //             tts.setPitch(value);
-  //           });
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
 }
