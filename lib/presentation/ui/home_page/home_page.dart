@@ -138,13 +138,14 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         // 現在時刻
         Text(
           nowtime,
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context).textTheme.headlineLarge,
         ),
+        const SpaceBox.height(value: 32),
         // 音声再生・停止ボタン
         playStopButton(),
         // 各種設定
         Container(
-          margin: const EdgeInsets.only(top: 40, left: 15, right: 15),
+          margin: const EdgeInsets.only(top: 80, left: 15, right: 15),
           child: Column(
             children: [
               // 時間読み上げ回数リスト
@@ -154,7 +155,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
             ],
           ),
         ),
-        const SpaceBox.height(value: 60),
+        const SpaceBox.height(value: 80),
         // Admob広告の表示
         AdHelper().setAdContainer(context, adWidget),
       ],
@@ -177,11 +178,14 @@ class _HomePageState extends ConsumerState<MyHomePage> {
       icon: ref.watch(homePageProvider).isSpeechPlay
           ? const Icon(Icons.stop_circle_outlined, size: 30)
           : const Icon(Icons.play_circle_outline, size: 30),
-      label: Text(
-        buttonLabel,
-        style: TextStyle(
-          fontSize: 28,
-          color: Theme.of(context).colorScheme.surface,
+      label: Container(
+        margin: const EdgeInsets.all(15),
+        child: Text(
+          buttonLabel,
+          style: TextStyle(
+            fontSize: 28,
+            color: Theme.of(context).colorScheme.surface,
+          ),
         ),
       ),
     );
