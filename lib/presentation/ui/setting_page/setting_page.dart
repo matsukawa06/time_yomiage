@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:time_yomiage/admob/ad_helper.dart';
 import 'package:time_yomiage/presentation/controller/theme_controller.dart';
 import 'package:time_yomiage/presentation/ui/home_page/util/util_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,13 +11,17 @@ import 'package:url_launcher/url_launcher.dart';
 /// settingページ
 ///
 class SettingPage extends ConsumerWidget {
-  const SettingPage({super.key});
+  SettingPage({super.key});
+
+  final BannerAd myBanner = AdHelper().setBannerAd();
 
   //=========================================
   // 画面描画
   //=========================================
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 広告の読み込み
+    myBanner.load();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -33,27 +39,33 @@ class SettingPage extends ConsumerWidget {
       return PackageInfo.fromPlatform();
     }
 
-    return Container(
-      padding: const EdgeInsets.all(28),
-      child: FutureBuilder(
-        future: getPackageInfo(),
-        builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-          if (snapshot.hasError) {
-            return const Text('ERROR');
-          } else if (!snapshot.hasData) {
-            return const Text('Loading...');
-          }
-          final data = snapshot.data!;
-          return Column(
-            children: [
-              // App設定
-              _appSetting(context, ref),
-              const SpaceBox.height(value: 32),
-              // App情報
-              _appInfo(context, data),
-            ],
-          );
-        },
+    // SafeAreaでWrapしておけば、端末によるノッチをいい感じに調整してくれる
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(28),
+        child: FutureBuilder(
+          future: getPackageInfo(),
+          builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+            if (snapshot.hasError) {
+              return const Text('ERROR');
+            } else if (!snapshot.hasData) {
+              return const Text('Loading...');
+            }
+            final data = snapshot.data!;
+            return Column(
+              children: [
+                // App設定
+                _appSetting(context, ref),
+                const SpaceBox.height(value: 32),
+                // App情報
+                _appInfo(context, data),
+                const SpaceBox.height(value: 80),
+                // Admob広告の表示
+                AdHelper().setAdContainer(context, AdWidget(ad: myBanner)),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

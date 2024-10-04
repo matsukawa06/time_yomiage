@@ -111,13 +111,14 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     );
   }
 
+  // 設定ページ遷移アイコン
   Widget _settingIcon(BuildContext context) {
     return IconButton(
       onPressed: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return const SettingPage();
+              return SettingPage();
             },
           ),
         );
