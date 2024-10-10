@@ -20,6 +20,7 @@ class SettingPage extends ConsumerWidget {
   //=========================================
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.of(context).size;
     // 広告の読み込み
     myBanner.load();
     return Scaffold(
@@ -27,7 +28,14 @@ class SettingPage extends ConsumerWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
         title: const Text('設定'),
       ),
-      body: _body(ref),
+      body: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: size.width * 0.9,
+            child: _body(ref),
+          ),
+        ),
+      ),
     );
   }
 
@@ -40,33 +48,28 @@ class SettingPage extends ConsumerWidget {
     }
 
     // SafeAreaでWrapしておけば、端末によるノッチをいい感じに調整してくれる
-    return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.all(28),
-        child: FutureBuilder(
-          future: getPackageInfo(),
-          builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-            if (snapshot.hasError) {
-              return const Text('ERROR');
-            } else if (!snapshot.hasData) {
-              return const Text('Loading...');
-            }
-            final data = snapshot.data!;
-            return Column(
-              children: [
-                // App設定
-                _appSetting(context, ref),
-                const SpaceBox.height(value: 32),
-                // App情報
-                _appInfo(context, data),
-                const SpaceBox.height(value: 80),
-                // Admob広告の表示
-                AdHelper().setAdContainer(context, AdWidget(ad: myBanner)),
-              ],
-            );
-          },
-        ),
-      ),
+    return FutureBuilder(
+      future: getPackageInfo(),
+      builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+        if (snapshot.hasError) {
+          return const Text('ERROR');
+        } else if (!snapshot.hasData) {
+          return const Text('Loading...');
+        }
+        final data = snapshot.data!;
+        return Column(
+          children: [
+            // App設定
+            _appSetting(context, ref),
+            const SpaceBox.height(value: 32),
+            // App情報
+            _appInfo(context, data),
+            const SpaceBox.height(value: 80),
+            // Admob広告の表示
+            AdHelper().setAdContainer(context, AdWidget(ad: myBanner)),
+          ],
+        );
+      },
     );
   }
 

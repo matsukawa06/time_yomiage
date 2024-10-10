@@ -102,10 +102,12 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         title: const Text(''),
         actions: [_settingIcon(context)],
       ),
-      body: Center(
-        child: SizedBox(
-          width: size.width * 0.9,
-          child: bodyMain(context),
+      body: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: size.width * 0.9,
+            child: bodyMain(context),
+          ),
         ),
       ),
     );
@@ -166,26 +168,31 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   // 音声再生・停止ボタン
   Widget playStopButton() {
     String buttonLabel;
+    IconData buttonIconData;
+    Color buttonColor;
+
     if (ref.watch(homePageProvider).isSpeechPlay) {
       buttonLabel = '読み上げ停止';
+      buttonIconData = Icons.stop_circle_outlined;
+      buttonColor = Theme.of(context).colorScheme.errorContainer;
     } else {
       buttonLabel = '読み上げ開始';
+      buttonIconData = Icons.play_circle_outline;
+      buttonColor = Theme.of(context).colorScheme.surface;
     }
 
     return FilledButton.icon(
       onPressed: () {
         ref.read(homePageProvider).clickSpeakButton();
       },
-      icon: ref.watch(homePageProvider).isSpeechPlay
-          ? const Icon(Icons.stop_circle_outlined, size: 30)
-          : const Icon(Icons.play_circle_outline, size: 30),
+      icon: Icon(buttonIconData, size: 30),
       label: Container(
         margin: const EdgeInsets.all(15),
         child: Text(
           buttonLabel,
           style: TextStyle(
             fontSize: 28,
-            color: Theme.of(context).colorScheme.surface,
+            color: buttonColor,
           ),
         ),
       ),
