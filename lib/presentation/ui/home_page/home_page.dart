@@ -53,7 +53,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
       // 読み上げ中は処理終了
       if (isSpeak) return;
       // 0秒の時は時間を読み上げ
-      speakTime();
+      _speakTime();
       // 読み上げ中に変更
       isSpeak = true;
     } else if (secondsList.contains(nowSecond)) {
@@ -62,7 +62,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
       // 読み上げ中は処理終了
       if (isSpeak) return;
       // 秒を読み上げ
-      speakSecond(nowSecond);
+      _speakSecond(nowSecond);
       // 読み上げ中に変更
       isSpeak = true;
     } else {
@@ -70,14 +70,8 @@ class _HomePageState extends ConsumerState<MyHomePage> {
     }
   }
 
-  // 秒を読み上げ
-  void speakSecond(String pScends) {
-    // tts.speak('$pScends秒');
-    ref.read(homePageProvider).speakTts('$pScends秒');
-  }
-
   // 時間を読み上げ
-  Future<void> speakTime() async {
+  Future<void> _speakTime() async {
     var newTime = DateFormat('HH:mm').format(DateTime.now());
     int hourTimes = ref.watch(homePageProvider).hourTimes;
     for (int i = 0; i < hourTimes; i++) {
@@ -85,6 +79,12 @@ class _HomePageState extends ConsumerState<MyHomePage> {
       ref.read(homePageProvider).speakTts(newTime);
       await Future.delayed(const Duration(seconds: 3));
     }
+  }
+
+  // 秒を読み上げ
+  void _speakSecond(String pScends) {
+    // tts.speak('$pScends秒');
+    ref.read(homePageProvider).speakTts('$pScends秒');
   }
 
   //=========================================
@@ -106,7 +106,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         child: Center(
           child: SizedBox(
             width: size.width * 0.9,
-            child: bodyMain(context),
+            child: _bodyMain(context),
           ),
         ),
       ),
@@ -134,7 +134,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   }
 
   // メインコンテンツ
-  Column bodyMain(BuildContext context) {
+  Column _bodyMain(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -145,16 +145,16 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         ),
         const SpaceBox.height(value: 32),
         // 音声再生・停止ボタン
-        playStopButton(),
+        _playStopButton(),
         // 各種設定
         Container(
           margin: const EdgeInsets.only(top: 80, left: 15, right: 15),
           child: Column(
             children: [
               // 時間読み上げ回数リスト
-              hourTimesList(),
+              _hourTimesList(),
               // 秒読み上げスイッチ
-              secondSwitch(),
+              _secondSwitch(),
             ],
           ),
         ),
@@ -166,19 +166,16 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   }
 
   // 音声再生・停止ボタン
-  Widget playStopButton() {
+  Widget _playStopButton() {
     String buttonLabel;
     IconData buttonIconData;
-    Color buttonColor;
 
     if (ref.watch(homePageProvider).isSpeechPlay) {
       buttonLabel = '読み上げ停止';
       buttonIconData = Icons.stop_circle_outlined;
-      buttonColor = Theme.of(context).colorScheme.errorContainer;
     } else {
       buttonLabel = '読み上げ開始';
       buttonIconData = Icons.play_circle_outline;
-      buttonColor = Theme.of(context).colorScheme.surface;
     }
 
     return FilledButton.icon(
@@ -192,7 +189,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
           buttonLabel,
           style: TextStyle(
             fontSize: 28,
-            color: buttonColor,
+            color: Theme.of(context).colorScheme.surface,
           ),
         ),
       ),
@@ -200,7 +197,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   }
 
   // 時間読み上げ回数リスト
-  Widget hourTimesList() {
+  Widget _hourTimesList() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -210,14 +207,8 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         ),
         DropdownButton(
           items: const [
-            DropdownMenuItem(
-              value: 1,
-              child: Text('１回'),
-            ),
-            DropdownMenuItem(
-              value: 2,
-              child: Text('２回'),
-            )
+            DropdownMenuItem(value: 1, child: Text('１回')),
+            DropdownMenuItem(value: 2, child: Text('２回')),
           ],
           value: ref.watch(homePageProvider).hourTimes,
           onChanged: (int? value) {
@@ -229,7 +220,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   }
 
   // 秒読み上げスイッチ
-  Widget secondSwitch() {
+  Widget _secondSwitch() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

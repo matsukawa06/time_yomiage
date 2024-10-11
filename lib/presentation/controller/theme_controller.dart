@@ -19,6 +19,9 @@ class ThemeController extends ChangeNotifier {
   final Ref ref;
   // SharedPreferences用のキー文字列
   final String _keyIsDark = 'isDark';
+  final String _keyVolume = 'volume';
+  final String _keySpeechRate = 'speechRate';
+  final String _keyPitch = 'pitch';
   // final String _keyMainColor = 'mainColor';
 
   // ダークモード関連
