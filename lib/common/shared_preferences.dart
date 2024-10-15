@@ -21,4 +21,9 @@ class Shared {
     var prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);
   }
+
+  Future saveDoubleValue(String key, double value) async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setDouble(key, value);
+  }
 }

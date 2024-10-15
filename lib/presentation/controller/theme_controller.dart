@@ -39,7 +39,22 @@ class ThemeController extends ChangeNotifier {
     // ダークモード
     isDark = prefs.getBool(_keyIsDark) ?? false;
     _lightOrDarkSetting();
-    // 読み上げ設定
+
+    // ボリューム
+    var prefsVolume = prefs.getDouble(_keyVolume);
+    if (prefsVolume != null) {
+      changeVolumeSlider(prefsVolume);
+    }
+    // 速度
+    var prefsSpeechRate = prefs.getDouble(_keySpeechRate);
+    if (prefsSpeechRate != null) {
+      changeSpeechRateSlider(prefsSpeechRate);
+    }
+    // ピッチ
+    var prefsPitch = prefs.getDouble(_keyPitch);
+    if (prefsPitch != null) {
+      changePitchSlider(prefsPitch);
+    }
 
     notifyListeners();
   }
@@ -63,6 +78,7 @@ class ThemeController extends ChangeNotifier {
   changeVolumeSlider(double e) {
     ref.read(ttsController).changeVolume(e);
     volume = e;
+    Shared().saveDoubleValue(_keyVolume, e);
     notifyListeners();
   }
 
@@ -70,6 +86,7 @@ class ThemeController extends ChangeNotifier {
   changeSpeechRateSlider(double e) {
     ref.read(ttsController).changeSpeechRate(e);
     speechRate = e;
+    Shared().saveDoubleValue(_keySpeechRate, e);
     notifyListeners();
   }
 
@@ -77,6 +94,7 @@ class ThemeController extends ChangeNotifier {
   changePitchSlider(double e) {
     ref.read(ttsController).changePitch(e);
     pitch = e;
+    Shared().saveDoubleValue(_keyPitch, e);
     notifyListeners();
   }
 
