@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:time_yomiage/common/common_const.dart';
 import 'package:time_yomiage/common/shared_preferences.dart';
 import 'package:time_yomiage/presentation/controller/tts_controller.dart';
 
@@ -17,12 +18,6 @@ class ThemeController extends ChangeNotifier {
     _getShaed();
   }
   final Ref ref;
-  // SharedPreferences用のキー文字列
-  final String _keyIsDark = 'isDark';
-  final String _keyVolume = 'volume';
-  final String _keySpeechRate = 'speechRate';
-  final String _keyPitch = 'pitch';
-  // final String _keyMainColor = 'mainColor';
 
   // ダークモード関連
   ThemeMode mode = ThemeMode.light;
@@ -37,23 +32,23 @@ class ThemeController extends ChangeNotifier {
   Future _getShaed() async {
     var prefs = await SharedPreferences.getInstance();
     // ダークモード
-    isDark = prefs.getBool(_keyIsDark) ?? false;
+    isDark = prefs.getBool(keyIsDark) ?? false;
     _lightOrDarkSetting();
 
     // ボリューム
-    var prefsVolume = prefs.getDouble(_keyVolume);
+    var prefsVolume = prefs.getDouble(keyVolume);
     if (prefsVolume != null) {
-      changeVolumeSlider(prefsVolume);
+      _volumeSetting(prefsVolume);
     }
     // 速度
-    var prefsSpeechRate = prefs.getDouble(_keySpeechRate);
+    var prefsSpeechRate = prefs.getDouble(keySpeechRate);
     if (prefsSpeechRate != null) {
-      changeSpeechRateSlider(prefsSpeechRate);
+      _speechRateSetting(prefsSpeechRate);
     }
     // ピッチ
-    var prefsPitch = prefs.getDouble(_keyPitch);
+    var prefsPitch = prefs.getDouble(keyPitch);
     if (prefsPitch != null) {
-      changePitchSlider(prefsPitch);
+      _pitchSetting(prefsPitch);
     }
 
     notifyListeners();
@@ -64,7 +59,7 @@ class ThemeController extends ChangeNotifier {
     isDark = !isDark;
     _lightOrDarkSetting();
     // SharedPreferencesに保存
-    Shared().saveBoolValue(_keyIsDark, isDark);
+    Shared().saveValue(keyIsDark, TypeValue.bool, isDark);
     notifyListeners();
   }
 
@@ -76,26 +71,41 @@ class ThemeController extends ChangeNotifier {
 
   // ボリュームスライダー変更
   changeVolumeSlider(double e) {
+    _volumeSetting(e);
+    Shared().saveValue(keyVolume, TypeValue.double, e);
+    notifyListeners();
+  }
+
+  // ボリュームの設定変更
+  _volumeSetting(double e) {
     ref.read(ttsController).changeVolume(e);
     volume = e;
-    Shared().saveDoubleValue(_keyVolume, e);
-    notifyListeners();
   }
 
   // 速度スライダー変更
   changeSpeechRateSlider(double e) {
+    _speechRateSetting(e);
+    Shared().saveValue(keySpeechRate, TypeValue.double, e);
+    notifyListeners();
+  }
+
+  // 速度の設定変更
+  _speechRateSetting(double e) {
     ref.read(ttsController).changeSpeechRate(e);
     speechRate = e;
-    Shared().saveDoubleValue(_keySpeechRate, e);
-    notifyListeners();
   }
 
   // ピッチスライダー変更
   changePitchSlider(double e) {
+    _pitchSetting(e);
+    Shared().saveValue(keyPitch, TypeValue.double, e);
+    notifyListeners();
+  }
+
+  // ピッチの設定変更
+  _pitchSetting(double e) {
     ref.read(ttsController).changePitch(e);
     pitch = e;
-    Shared().saveDoubleValue(_keyPitch, e);
-    notifyListeners();
   }
 
   // // 声リスト作成
