@@ -10,4 +10,6 @@ const String keyIsDark = 'isDark';
 const String keyVolume = 'volume';
 const String keySpeechRate = 'speechRate';
 const String keyPitch = 'pitch';
-  // final String _keyMainColor = 'mainColor';
+// final String _keyMainColor = 'mainColor';
+const String keyIsSecondSwitch = 'isSecondSwitch';
+const String keyHourTimes = 'hourTimes';

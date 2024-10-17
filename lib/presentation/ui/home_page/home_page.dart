@@ -30,7 +30,7 @@ class _HomePageState extends ConsumerState<MyHomePage> {
   void initState() {
     super.initState();
     Timer.periodic(const Duration(milliseconds: 100), _onTimer);
-    ref.read(homePageProvider).initTts();
+    ref.read(homePageProvider).init();
   }
 
   void _onTimer(Timer timer) {
