@@ -69,10 +69,22 @@ class ThemeController extends ChangeNotifier {
     // fontColor = isDark ? Colors.white : Colors.black;
   }
 
-  // ボリュームスライダー変更
-  changeVolumeSlider(double e) {
-    _volumeSetting(e);
-    Shared().saveValue(keyVolume, TypeValue.double, e);
+  // スライダー変更
+  changeSlider(double e, SliderType type) {
+    switch (type) {
+      case SliderType.volume:
+        _volumeSetting(e);
+        Shared().saveValue(keyVolume, TypeValue.double, e);
+        break;
+      case SliderType.speechRate:
+        _speechRateSetting(e);
+        Shared().saveValue(keySpeechRate, TypeValue.double, e);
+        break;
+      case SliderType.pitch:
+        _pitchSetting(e);
+        Shared().saveValue(keyPitch, TypeValue.double, e);
+        break;
+    }
     notifyListeners();
   }
 
@@ -82,24 +94,10 @@ class ThemeController extends ChangeNotifier {
     volume = e;
   }
 
-  // 速度スライダー変更
-  changeSpeechRateSlider(double e) {
-    _speechRateSetting(e);
-    Shared().saveValue(keySpeechRate, TypeValue.double, e);
-    notifyListeners();
-  }
-
   // 速度の設定変更
   _speechRateSetting(double e) {
     ref.read(ttsController).changeSpeechRate(e);
     speechRate = e;
-  }
-
-  // ピッチスライダー変更
-  changePitchSlider(double e) {
-    _pitchSetting(e);
-    Shared().saveValue(keyPitch, TypeValue.double, e);
-    notifyListeners();
   }
 
   // ピッチの設定変更

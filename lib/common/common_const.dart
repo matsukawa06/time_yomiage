@@ -5,6 +5,12 @@ enum TypeValue {
   bool,
 }
 
+enum SliderType {
+  volume,
+  speechRate,
+  pitch,
+}
+
 // SharedPreferences用のキー文字列
 const String keyIsDark = 'isDark';
 const String keyVolume = 'volume';

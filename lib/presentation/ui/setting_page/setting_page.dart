@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:time_yomiage/admob/ad_helper.dart';
+import 'package:time_yomiage/common/common_const.dart';
 import 'package:time_yomiage/presentation/controller/theme_controller.dart';
 import 'package:time_yomiage/presentation/ui/home_page/util/util_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -28,6 +29,7 @@ class SettingPage extends ConsumerWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
         title: const Text('設定'),
       ),
+      // SafeAreaでWrapしておけば、端末によるノッチをいい感じに調整してくれる
       body: SafeArea(
         child: Center(
           child: SizedBox(
@@ -47,7 +49,6 @@ class SettingPage extends ConsumerWidget {
       return PackageInfo.fromPlatform();
     }
 
-    // SafeAreaでWrapしておけば、端末によるノッチをいい感じに調整してくれる
     return FutureBuilder(
       future: getPackageInfo(),
       builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
@@ -100,77 +101,52 @@ class SettingPage extends ConsumerWidget {
               ],
             ),
             // ボリュームスライダー
-            volumeSlider(context, ref),
+            createSlider(context, ref, SliderType.volume),
             // 速度スライダー
-            speechRateSlider(context, ref),
+            createSlider(context, ref, SliderType.speechRate),
             // ピッチスライダー
-            pitchSlider(context, ref),
+            createSlider(context, ref, SliderType.pitch),
           ],
         ),
       ),
     );
   }
 
-  // ボリュームスライダー
-  Widget volumeSlider(BuildContext context, WidgetRef ref) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'ボリューム',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        Slider(
-          value: ref.watch(themeController).volume,
-          min: 0.0,
-          max: 1.0,
-          divisions: 10,
-          onChanged: (value) {
-            ref.read(themeController).changeVolumeSlider(value);
-          },
-        ),
-      ],
-    );
-  }
+  //
+  // スライダー作成
+  //
+  Widget createSlider(BuildContext context, WidgetRef ref, SliderType type) {
+    String title;
+    double value;
 
-  // 速度スライダー
-  Widget speechRateSlider(BuildContext context, WidgetRef ref) {
+    switch (type) {
+      case SliderType.volume:
+        title = 'ボリューム';
+        value = ref.watch(themeController).volume;
+        break;
+      case SliderType.speechRate:
+        title = '速度';
+        value = ref.watch(themeController).speechRate;
+        break;
+      case SliderType.pitch:
+        title = 'ピッチ';
+        value = ref.watch(themeController).pitch;
+        break;
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '速度',
+          title,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         Slider(
-          value: ref.watch(themeController).speechRate,
+          value: value,
           min: 0.0,
           max: 1.0,
           divisions: 10,
           onChanged: (value) {
-            ref.read(themeController).changeSpeechRateSlider(value);
-          },
-        ),
-      ],
-    );
-  }
-
-  // ピッチスライダー
-  Widget pitchSlider(BuildContext context, WidgetRef ref) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'ピッチ',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        Slider(
-          value: ref.watch(themeController).pitch,
-          min: 0.0,
-          max: 1.0,
-          divisions: 10,
-          onChanged: (value) {
-            ref.read(themeController).changePitchSlider(value);
+            ref.read(themeController).changeSlider(value, type);
           },
         ),
       ],

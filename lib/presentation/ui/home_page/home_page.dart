@@ -141,7 +141,10 @@ class _HomePageState extends ConsumerState<MyHomePage> {
         // 現在時刻
         Text(
           nowtime,
-          style: Theme.of(context).textTheme.displayMedium,
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+            // 数字の幅によって表示がズレないように指定
+            fontFeatures: [const FontFeature.tabularFigures()],
+          ),
         ),
         const SpaceBox.height(value: 32),
         // 音声再生・停止ボタン
